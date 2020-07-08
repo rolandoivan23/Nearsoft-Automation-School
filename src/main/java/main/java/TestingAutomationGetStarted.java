@@ -1,12 +1,16 @@
 package main.java;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 
+import java.io.IOException;
 import java.util.List;
 
 public class TestingAutomationGetStarted {
@@ -43,6 +47,30 @@ public class TestingAutomationGetStarted {
         }
         delete_btns = driver.findElements(By.cssSelector("#elements .added-manually"));
         Assert.assertEquals(delete_btns.size(), 0);
+
+        //Broken image testing
+        driver.get("http://the-internet.herokuapp.com/");
+        driver.findElement( By.cssSelector("#content > ul > li:nth-child(4) > a")).click();
+        List<WebElement> images = driver.findElements(By.cssSelector(".example img"));
+        int broken_images_counter = 0;
+        int success_images_counter = 0;
+        for(WebElement img : images){
+            HttpResponse response = null;
+            try {
+                response = new
+                        DefaultHttpClient().execute(new HttpGet(img.getAttribute("src")));
+
+                if (response.getStatusLine().getStatusCode() != 200)
+                    broken_images_counter++;
+                else
+                    success_images_counter++;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.assertEquals(broken_images_counter, 2);
+        Assert.assertEquals(success_images_counter, 1);
 
         driver.close();
     }
