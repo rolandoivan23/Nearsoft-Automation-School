@@ -25,6 +25,12 @@ public class NavBar extends BasePage {
     @FindBy(css = "#search_suggestion_contents > a > .match_name")
     private List<WebElement> suggestedGames;
 
+    @FindBy(css = "#search_suggestion_contents > a")
+    private WebElement ultimateDoomSuggestion;
+
+    @FindBy(css = "#search_suggestion_contents > a[data-ds-itemkey='App_813780']")
+    private WebElement ageOfEmpiresTwo;
+
     public NavBar(WebDriver driver){
         super(driver);
         PageFactory.initElements(driver, this);
@@ -50,7 +56,20 @@ public class NavBar extends BasePage {
         return suggested_games_names;
     }
 
+    public WebElement getUltimateDoomSuggestion(){
+        return ultimateDoomSuggestion;
+    }
+
+    public void goUltimateDoomPage(){
+        click(this.ultimateDoomSuggestion);
+    }
+
+    public void goAgeOfEmpires(){
+        click(this.ageOfEmpiresTwo);
+    }
+
     public void writeGameIntoSearchInput(String game_name){
+
         this.writeInInput(searchTheStoreInput, game_name);
     }
 
